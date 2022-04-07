@@ -10,7 +10,6 @@ import javax.mail.event.MessageCountEvent;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +21,7 @@ public class Imap {
     private final List<Listener> listeners = new LinkedList<>();
 
     public Imap(String host, String username, String password, boolean verbose) throws MessagingException, IOException {
-        final Properties props = System.getProperties();
+        final var props = System.getProperties();
         props.setProperty("mail.store.protocol", "imaps");
         props.put("mail.pop3.ssl.enable", "true");
         props.setProperty("mail.imaps.usesocketchannels", "true");
@@ -31,7 +30,7 @@ public class Imap {
         Store store = session.getStore("imaps");
 
         store.connect(host,username, password);
-        Folder folder = store.getFolder("Inbox");
+        var folder = store.getFolder("Inbox");
         folder.open(Folder.READ_WRITE);
 
         if (verbose) {
@@ -44,7 +43,7 @@ public class Imap {
         folder.addMessageCountListener(new MessageCountAdapter() {
             public void messagesAdded(MessageCountEvent ev) {
                 try {
-                    Folder folder = (Folder) ev.getSource();
+                    var folder = (Folder) ev.getSource();
                     var messages = ev.getMessages();
 
                     for (var message : messages) {
@@ -79,7 +78,6 @@ public class Imap {
             }
         });
         idleManager.watch(folder);
-
     }
 
     public Imap(String host, String username, String password) throws MessagingException, IOException {
